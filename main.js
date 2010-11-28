@@ -42,7 +42,12 @@ path.exists(config.data_dir, function(exists) {
 
 
 // read old from last runs from  data from directory
-// TODO:
+fs.readdir(config.data_dir, function(err, files) {
+	if (err) throw err;
+	files.forEach(function(f) {
+		dns_resolver.new_domain(f);
+	});
+});
 
 // periodically check for new domain input list
 setInterval(check_for_new_input, 1000);

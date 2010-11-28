@@ -28,6 +28,8 @@ function dns_resolver_finished(domain, addresses, ttl) {
 
 	var timestamp = new Date();
 
+	console.log("Got resolution for " + domain + ". Rescheduling query in " + ttl + " seconds");
+
 	fs.open(config.data_dir + '/' + domain, "a+", 0666, function (err, fd) {
 		if (err) throw err;
 		//console.log("Opened file: " + JSON.stringify(stat));
