@@ -1,1 +1,1 @@
-storage_dir="/data/fluxmon/"
+storage_dir="fluxmon-data/"
