@@ -2,11 +2,20 @@ var dns    = require('dns');
 var fs     = require('fs');
 var config = require('./config.js');
 
+var observed_domains = new Array();
+
 function add_new_domain(domain) {
 	// TODO: check if we already know the domain and have it in our active lookup list
 	// this is important!!
+	
+	observed_domains.forEach(function (d) {
+		if (domain == d) {
+			console.log('No need to add domain ' + domain + ' to list, already known');
+			return;
+		}
+	});
 
-
+	observed_domains.push(domain);
 	// immediate dns lookup
 	lookup_domain(domain)	
 }
