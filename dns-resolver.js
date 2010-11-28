@@ -8,12 +8,16 @@ function add_new_domain(domain) {
 	// TODO: check if we already know the domain and have it in our active lookup list
 	// this is important!!
 	
+	var proceed = true;
 	observed_domains.forEach(function (d) {
 		if (domain == d) {
 			console.log('No need to add domain ' + domain + ' to list, already known');
-			return;
+			proceed = false;
 		}
 	});
+	if (!proceed) {
+		return;
+	}
 
 	observed_domains.push(domain);
 	// immediate dns lookup
