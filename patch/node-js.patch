@@ -1,0 +1,26 @@
+diff --git a/src/node_cares.cc b/src/node_cares.cc
+index 4f5383e..b064c62 100644
+--- a/src/node_cares.cc
++++ b/src/node_cares.cc
+@@ -281,7 +281,9 @@ static void ParseAnswerA(QueryArg *arg, unsigned char* abuf, int alen) {
+ 
+   hostent* host;
+ 
+-  int status = ares_parse_a_reply(abuf, alen, &host, NULL, NULL);
++  struct ares_addrttl ttl;
++  int ttl_nos = 1;
++  int status = ares_parse_a_reply(abuf, alen, &host, &ttl, &ttl_nos);
+   if (status != ARES_SUCCESS) {
+     ResolveError(arg->js_cb, status);
+     return;
+@@ -290,8 +292,8 @@ static void ParseAnswerA(QueryArg *arg, unsigned char* abuf, int alen) {
+   Local<Array> addresses = HostEntToAddresses(host);
+   ares_free_hostent(host);
+ 
+-  Local<Value> argv[2] = { Local<Value>::New(Null()), addresses };
+-  cb_call(arg->js_cb, 2, argv);
++  Local<Value> argv[3] = { Local<Value>::New(Null()), addresses, Integer::New(ttl.ttl) };
++  cb_call(arg->js_cb, 3, argv);
+ }
+ 
+ 

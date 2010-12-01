@@ -1,0 +1,1 @@
+Node-JS currently does not pass TTL for DNS requests to the user. Hence, it is necessary to patch the node-js source code with patches/node-js.patch
