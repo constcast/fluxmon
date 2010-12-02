@@ -3,8 +3,6 @@ from twisted.names import client
 
 import os, sys, time, socket
 
-import domain
-
 class Domain:
 	def __init__(self, logdir, domainname, resolver):
 		self.logdir = logdir
