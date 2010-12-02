@@ -39,15 +39,12 @@ class Domain:
 		f.close()
 
 		print "Got resolution for ", self.name, ". Rescheduling in ", self.ttl, " seconds ..."
-		if self.ttl == 0:
-			reactor.callLater(1, self.lookupAddress)
-		else:
-			reactor.callLater(self.ttl, self.lookupAddress)
+		reactor.callLater(self.ttl + 1, self.lookupAddress)
 
 	def printFailure(self, arg):
-		print "Error: could not resolve \"", self.name, "\". Trying again in an hour ..."
+		print "Error: could not resolve \"", self.name, "\". Trying again in two minutes ..."
 		# lookup in an hour again
-		reactor.callLater(3600, self.lookupAddress)
+		reactor.callLater(120, self.lookupAddress)
 
 class DomainAgent:
 	def __init__(self, storage_dir, domain_db, update_file):
