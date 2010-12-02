@@ -1,13 +1,60 @@
 from twisted.internet import reactor
+from twisted.names import client
 
-import os, sys
+import os, sys, time, socket
 
 import domain
 
+class Domain:
+	def __init__(self, logdir, domainname, resolver):
+		self.logdir = logdir
+		self.name = domainname
+		self.resolver = resolver		
+		self.lookupAddress()
+
+	def lookupAddress(self):
+		d = self.resolver.lookupAddress(self.name)
+		sucess = lambda (answers, auth, add): self.printAnswer((answers, auth, add))
+		failure = lambda (args): self.printFailure(args)
+		d.addCallbacks(sucess, failure)
+
+	def printAnswer(self, (answers, auth, add)):
+		cur_time = time.time()
+		if not len(answers):
+			print 'No Answers'
+			# call again in an hour
+			reactor.callLater(3600, self.lookupAddress)
+			return
+		self.ttl = 360000
+		f = open(self.logdir + "/" + self.name, 'a')
+		for x in answers:
+
+			if x.type == 1:
+				# we have an A record
+				a =  socket.inet_ntoa(x.payload.address)
+				f.write(("A %s %d %s %f\n") % (self.name, x.payload.ttl, a, cur_time))
+				
+			if x.payload.ttl < self.ttl:
+				self.ttl = x.payload.ttl
+		f.close()
+
+		print "Got resolution for ", self.name, ". Rescheduling in ", self.ttl, " seconds ..."
+		if self.ttl == 0:
+			reactor.callLater(1, self.lookupAddress)
+		else:
+			reactor.callLater(self.ttl, self.lookupAddress)
+
+	def printFailure(self, arg):
+		print "Error: could not resolve \"", self.name, "\". Trying again in an hour ..."
+		# lookup in an hour again
+		reactor.callLater(3600, self.lookupAddress)
+
 class DomainAgent:
-	def __init__(self, domain_db, update_file):
+	def __init__(self, storage_dir, domain_db, update_file):
 		self.domain_db = domain_db
-		self.domain_list = []
+		self.storage_dir = storage_dir
+		self.resolver = client.Resolver('/etc/resolv.conf')
+		self.domain_list = dict()
 		print "Reading already known domains ..."
 		self.readKnownDomains()
 		self.update_file = update_file
@@ -26,7 +73,7 @@ class DomainAgent:
 			print "Cannot add domain \"" + domain + "\" because we are already checking it!"
 			return False
 		print "Adding domain \"" + domain + "\" to domain repository..."
-		self.domain_list.append(domain)
+		self.domain_list[domain] = Domain(self.storage_dir, domain, self.resolver);
 		return True
 		
 		

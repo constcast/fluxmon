@@ -17,7 +17,7 @@ if __name__ == "__main__":
 			print "Cannot create directory \"", config.storage_dir, "\": ", e.args;
 			sys.exit(-1);
 
-	agent = domain_agent.DomainAgent(domain_db, config.new_domain_file)
+	agent = domain_agent.DomainAgent(config.storage_dir, domain_db, config.new_domain_file)
 	print "\n\n"
 	print "****************************************************\n"
 	print "*     Startup completed. We are ready to go.       *\n"
