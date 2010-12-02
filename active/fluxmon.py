@@ -9,6 +9,7 @@ def pull_domains_from_db(db):
 
 if __name__ == "__main__":
 	print "Starting up fluxmon ..."
+	initial_domain_list = ""
 	if (os.path.isdir(config.storage_dir)) == True:
 		print "Found data storage directory \"" + config.storage_dir + "\"...";
 		domain_db = config.storage_dir + "/" + config.domain_db;
@@ -24,5 +25,11 @@ if __name__ == "__main__":
 			print "Cannot create directory \"", config.storage_dir, "\": ", e.args;
 			sys.exit(-1);
 
-	agent = domain_agent.DomainAgent(initial_domain_list, config.new_domain_list)
+	agent = domain_agent.DomainAgent(initial_domain_list, config.new_domain_file)
+	print "\n\n"
+	print "****************************************************\n"
+	print "*     Startup completed. We are ready to go.       *\n"
+	print "*        Starting fluxmon event loop ...           *\n"
+	print "****************************************************\n"
+	print "\n\n"
 	agent.run()
