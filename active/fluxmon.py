@@ -9,7 +9,7 @@ def pull_domains_from_db(db):
 
 if __name__ == "__main__":
 	print "Starting up fluxmon ..."
-	initial_domain_list = ""
+	initial_domain_list = []
 	if (os.path.isdir(config.storage_dir)) == True:
 		print "Found data storage directory \"" + config.storage_dir + "\"...";
 		domain_db = config.storage_dir + "/" + config.domain_db;
