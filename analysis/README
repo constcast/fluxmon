@@ -1,0 +1,3 @@
+Requires SubnetTree from http://www.icir.org/robin/pysubnettree/
+
+You need to the the Subnet/AS mapping from http://data.caida.org/datasets/routing/routeviews-prefix2as/
