@@ -2,7 +2,7 @@
 
 import sys, os
 
-import ASNTree
+import ASNTree, Domain, DNSRecord
 
 if __name__ == "__main__":
 	if len(sys.argv) != 3:
@@ -16,3 +16,16 @@ if __name__ == "__main__":
 		sys.exit(-1);
 
 	asnTree = ASNTree.ASNTree(asn_file)
+	domainList = []
+	print "Walking Logdir directory..."
+	for (root, dirs, files) in os.walk(data_dir):
+		for file in files:
+			try:
+				dom = Domain.Domain(file)
+				for line in open(root + '/' + file, 'r'):
+					dom.addRecord(DNSRecord.DNSRecord(line))
+
+				domainList.append(dom)
+			except Exception as inst:
+				print "Error reading file \"", file, "\": ", inst.args
+			
