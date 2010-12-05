@@ -21,11 +21,11 @@ if __name__ == "__main__":
 	for (root, dirs, files) in os.walk(data_dir):
 		for file in files:
 			try:
-				dom = Domain.Domain(file)
+				dom = Domain.Domain(file, tree)
 				for line in open(root + '/' + file, 'r'):
 					dom.addRecord(DNSRecord.DNSRecord(line))
 
 				domainList.append(dom)
 			except Exception as inst:
 				print "Error reading file \"", file, "\": ", inst.args
-			
+		
